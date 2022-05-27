@@ -1,6 +1,6 @@
-# Basic Sample Hardhat Project
+# Konma Events POA
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+This project deploys a NFT with mint function, and encapsulated by a UUPS contract. Pass a URI and Address to mint to whilst calling! 
 
 Try running some of the following tasks:
 
