@@ -12,24 +12,33 @@ contract KonmaEventPOA is Initializable, ERC721Upgradeable, ERC721URIStorageUpgr
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     CountersUpgradeable.Counter private _tokenIdCounter;
+    mapping (address => uint) mintTimeout;
+    uint256 timeOut;
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
     }
 
-    function initialize(string calldata _tokenName, string calldata _tokenSymbol) initializer public {
+    function initialize(string calldata _tokenName, string calldata _tokenSymbol, uint256 _timeOut) initializer public {
         __ERC721_init(_tokenName, _tokenSymbol);
         __ERC721URIStorage_init();
         __Ownable_init();
         __UUPSUpgradeable_init();
+        timeOut = _timeOut;
     }
 
     function safeMint(address to, string memory uri) public onlyOwner {
+        require(mintTimeout[to]<block.timestamp, "Graylisted now. Please try later");
+        mintTimeout[to]=block.timestamp+timeOut;
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
+    }
+
+    function changeTimeout(uint256 _newTimeOut) public onlyOwner{
+        timeOut = _newTimeOut;
     }
 
     function _authorizeUpgrade(address newImplementation)
